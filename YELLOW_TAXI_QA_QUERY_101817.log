@@ -1,0 +1,1551 @@
+
+Microsoft Windows [Version 10.0.14393]
+(c) 2016 Microsoft Corporation. All rights reserved.
+
+C:\Users\Joseph>C:\app\OraDt16\product\12.1.0\dbhome_1\bin\sqlplus sys/Dj931#7Hj@//localhost:1521/data16pr as sysdba
+
+SQL*Plus: Release 12.1.0.2.0 Production on Wed Oct 18 11:16:35 2017
+
+Copyright (c) 1982, 2014, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 12c Enterprise Edition Release 12.1.0.2.0 - 64bit Production
+With the Partitioning, OLAP, Advanced Analytics and Real Application Testing options
+
+sys@DATA16PR> connect searstgi_admin/tgi5933@//localhost:1521/pdt16tst
+Connected.
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT POOL, NAME, SUM(BYTES) FROM V$SGASTAT WHERE POOL LIKE '%pool%'
+  2    GROUP BY ROLLUP (POOL, NAME);
+
+POOL         NAME                       SUM(BYTES)
+------------ -------------------------- ----------
+java pool    free memory                  16777216
+java pool                                 16777216
+large pool   free memory                  17825792
+large pool                                17825792
+shared pool  KGLS                          5257728
+shared pool  SQLA                         80754984
+shared pool  SQLK                           226688
+shared pool  SQLP                           816976
+shared pool  call                             9192
+shared pool  KGLDA                         1311536
+shared pool  KGLH0                        28290712
+shared pool  KGLHD                         4148192
+shared pool  KGLNA                          128984
+shared pool  KKBTD                            9808
+shared pool  KKSSP                           42904
+shared pool  KKTDF                           19136
+shared pool  KKTIN                           13280
+shared pool  KKTSR                           39088
+shared pool  KOKTD                          229952
+shared pool  PDBHP                         4418944
+shared pool  PLDIA                         1245624
+shared pool  PLMCD                           56944
+shared pool  PRTDS                          115032
+shared pool  PRTMV                          483904
+shared pool  KQR L PO                      4137640
+shared pool  KQR M PO                       408120
+shared pool  KQR M SO                       193520
+shared pool  KQR S SO                        76304
+shared pool  KQR X PO                       572752
+shared pool  KQR X SO                      2692808
+shared pool  free memory                  84831400
+shared pool  kglsim heap                    337280
+shared pool  kkcnRstatIni                      680
+shared pool  kwqicaqe2kc1                    17616
+shared pool  kwssnmapAlloc                    8160
+shared pool  qmpspdbonfy:0                   65280
+shared pool  pdb event stats               1054720
+shared pool  pga detail array                  240
+shared pool  keomg: entry list              104448
+shared pool  ksu:ksunf_freelist               4032
+shared pool  PDB Heap Descriptor               136
+shared pool  kglsim object batch            475272
+shared pool  ksuseplsrctx memory                24
+shared pool  Result Cache: State Objs         6824
+shared pool  KCB tablespace encryption        2640
+shared pool  Sort Segment extent descr      137280
+shared pool  fixed allocation callback           8
+shared pool  ksr message pool free que        2592
+shared pool  kwqmncgr: allocate buffer        4112
+shared pool  modification hash table c      311296
+shared pool  modification hash table e        4128
+shared pool  multiblock read structure        8208
+shared pool  object queue header free       178880
+shared pool                              223256008
+                                         257859016
+
+55 rows selected.
+
+searstgi_admin@PDT16TST>
+
+
+Microsoft Windows [Version 10.0.14393]
+(c) 2016 Microsoft Corporation. All rights reserved.
+
+C:\Users\Joseph>C:\app\OraDt16\product\12.1.0\dbhome_1\bin\sqlplus sys/Dj931#7Hj@//localhost:1521/data16pr as sysdba
+
+SQL*Plus: Release 12.1.0.2.0 Production on Wed Oct 18 11:16:23 2017
+
+Copyright (c) 1982, 2014, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 12c Enterprise Edition Release 12.1.0.2.0 - 64bit Production
+With the Partitioning, OLAP, Advanced Analytics and Real Application Testing options
+
+sys@DATA16PR> connect searstgi_admin/tgi5933@//localhost:1521/pdt16tst
+Connected.
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> set echo on;
+searstgi_admin@PDT16TST> set timing on;
+searstgi_admin@PDT16TST> SET AUTOTRACE ON;
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT ALL_TRIPS_2015, TOTAL_PASSENGERS_2015, (TOTAL_PASSENGERS_2015/ALL_TRIPS_2015) AS AVG_PASSENGER_PER_TRIP FROM
+  2  (SELECT SUM(PASSENGER_COUNT1) AS TOTAL_PASSENGERS_2015 FROM YELLOW_TRIP_DATA_1_6_2015) A,
+  3  (SELECT COUNT(*) AS ALL_TRIPS_2015 FROM YELLOW_TRIP_DATA_1_6_2015 )B
+  4  ;
+
+ALL_TRIPS_2015 TOTAL_PASSENGERS_2015 AVG_PASSENGER_PER_TRIP
+-------------- --------------------- ----------------------
+      77080575             129332965              1.6778931
+
+Elapsed: 00:08:04.58
+
+Execution Plan
+----------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+--
+
+| Id  | Operation                | Name                      | Rows  | Bytes | Cost  |    TQ  |IN-OU
+T|
+
+----------------------------------------------------------------------------------------------------
+--
+
+|   0 | SELECT STATEMENT         |                           |     1 |    26 |   106K|        |
+ |
+
+|   1 |  NESTED LOOPS            |                           |     1 |    26 |   106K|        |
+ |
+
+|   2 |   VIEW                   |                           |     1 |    13 | 53486 |        |
+ |
+
+|   3 |    SORT AGGREGATE        |                           |     1 |     2 |       |        |
+ |
+
+|   4 |     PX COORDINATOR       |                           |       |       |       |        |
+ |
+
+|   5 |      PX SEND QC (RANDOM) | :TQ10000                  |     1 |     2 |       |  Q1,00 | P->S
+ |
+
+|   6 |       SORT AGGREGATE     |                           |     1 |     2 |       |  Q1,00 | PCWP
+ |
+
+|   7 |        PX BLOCK ITERATOR |                           |    77M|   147M| 53486 |  Q1,00 | PCWC
+ |
+
+|   8 |         TABLE ACCESS FULL| YELLOW_TRIP_DATA_1_6_2015 |    77M|   147M| 53486 |  Q1,00 | PCWP
+ |
+
+|   9 |   VIEW                   |                           |     1 |    13 |       |        |
+ |
+
+|  10 |    SORT AGGREGATE        |                           |     1 |       |       |        |
+ |
+
+|  11 |     PX COORDINATOR       |                           |       |       |       |        |
+ |
+
+|  12 |      PX SEND QC (RANDOM) | :TQ20000                  |     1 |       |       |  Q2,00 | P->S
+ |
+
+|  13 |       SORT AGGREGATE     |                           |     1 |       |       |  Q2,00 | PCWP
+ |
+
+|  14 |        PX BLOCK ITERATOR |                           |    77M|       | 53469 |  Q2,00 | PCWC
+ |
+
+|  15 |         TABLE ACCESS FULL| YELLOW_TRIP_DATA_1_6_2015 |    77M|       | 53469 |  Q2,00 | PCWP
+ |
+
+----------------------------------------------------------------------------------------------------
+--
+
+
+Note
+-----
+   - 'PLAN_TABLE' is old version
+
+
+Statistics
+----------------------------------------------------------
+        107  recursive calls
+          0  db block gets
+    3123259  consistent gets
+    3090004  physical reads
+          0  redo size
+        747  bytes sent via SQL*Net to client
+        551  bytes received via SQL*Net from client
+          2  SQL*Net roundtrips to/from client
+          0  sorts (memory)
+          0  sorts (disk)
+          1  rows processed
+
+searstgi_admin@PDT16TST> ^C
+C:\Users\Joseph>
+
+C:\Users\Joseph>
+
+C:\Users\Joseph>
+
+
+
+Microsoft Windows [Version 10.0.14393]
+(c) 2016 Microsoft Corporation. All rights reserved.
+
+C:\Users\Joseph>C:\app\OraDt16\product\12.1.0\dbhome_1\bin\sqlplus sys/Dj931#7Hj@//localhost:1521/data16pr as sysdba
+
+SQL*Plus: Release 12.1.0.2.0 Production on Wed Oct 18 11:16:27 2017
+
+Copyright (c) 1982, 2014, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 12c Enterprise Edition Release 12.1.0.2.0 - 64bit Production
+With the Partitioning, OLAP, Advanced Analytics and Real Application Testing options
+
+sys@DATA16PR> connect searstgi_admin/tgi5933@//localhost:1521/pdt16tst
+Connected.
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> set echo on;
+searstgi_admin@PDT16TST> set timing on;
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT TO_CHAR (SYSDATE, 'MM-DD-YYYY HH24:MI:SS' ) FROM DUAL;
+
+TO_CHAR(SYSDATE,'MM
+-------------------
+10-18-2017 11:31:28
+
+Elapsed: 00:00:00.00
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT CON_ID, NAME, OPEN_MODE, RESTRICTED FROM V$PDBS;
+
+    CON_ID NAME                           OPEN_MODE  RES
+---------- ------------------------------ ---------- ---
+         4 PDT16TST                       READ WRITE NO
+
+Elapsed: 00:00:00.28
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT DFO_NUMBER, TQ_ID, SERVER_TYPE, PROCESS, NUM_ROWS
+  2  FROM V$PQ_TQSTAT ORDER BY DFO_NUMBER DESC, TQ_ID, SERVER_TYPE, PROCESS;
+
+no rows selected
+
+Elapsed: 00:00:00.11
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT * FROM V$PX_BUFFER_ADVICE;
+
+STATISTIC                           VALUE     CON_ID
+------------------------------ ---------- ----------
+Servers Highwater                      12          0
+Buffers HWM                           148          0
+Estimated Buffers HWM                 144          0
+Servers Max                           160          0
+Estimated Buffers Max               19680          0
+Buffers Current Free                  960          0
+Buffers Current Total                 960          0
+
+7 rows selected.
+
+Elapsed: 00:00:00.04
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT * FROM V$PX_PROCESS;
+
+SERV STATUS           PID SPID                            SID    SERIAL# IS_GV     CON_ID
+---- --------- ---------- ------------------------ ---------- ---------- ----- ----------
+P000 AVAILABLE         26 2572                                           FALSE          0
+P001 AVAILABLE         27 2548                                           FALSE          0
+P002 AVAILABLE         28 3272                                           FALSE          0
+P003 AVAILABLE         40 2124                                           FALSE          0
+P004 AVAILABLE         41 1648                                           FALSE          0
+P005 AVAILABLE         42 1596                                           FALSE          0
+P006 AVAILABLE         43 384                                            FALSE          0
+P007 AVAILABLE         44 3732                                           FALSE          0
+P008 AVAILABLE         45 3736                                           FALSE          0
+P009 AVAILABLE         46 3488                                           FALSE          0
+P00A AVAILABLE         47 5032                                           FALSE          0
+P00B AVAILABLE         48 5020                                           FALSE          0
+P00C AVAILABLE         49 2728                                           FALSE          0
+P00D AVAILABLE         50 4308                                           FALSE          0
+P00E AVAILABLE         51 2884                                           FALSE          0
+P00F AVAILABLE         52 2824                                           FALSE          0
+P00G AVAILABLE         61 6808                                           FALSE          0
+P00H AVAILABLE         62 6120                                           FALSE          0
+P00I AVAILABLE         63 11096                                          FALSE          0
+P00J AVAILABLE         64 10888                                          FALSE          0
+P00K AVAILABLE         65 5380                                           FALSE          0
+P00L AVAILABLE         66 16680                                          FALSE          0
+
+22 rows selected.
+
+Elapsed: 00:00:00.07
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT * FROM V$PX_SESSION;
+
+no rows selected
+
+Elapsed: 00:00:00.00
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT * FROM V$PX_PROCESS_SYSSTAT;
+
+STATISTIC                           VALUE     CON_ID
+------------------------------ ---------- ----------
+Servers In Use                          0          0
+Servers Available                      22          0
+Servers Started                       490          0
+Servers Shutdown                      468          0
+Servers Highwater                      12          0
+Servers Cleaned Up                      0          0
+Server Sessions                     16646          0
+Memory Chunks Allocated                 4          0
+Memory Chunks Freed                     0          0
+Memory Chunks Current                   4          0
+Memory Chunks HWM                       4          0
+Buffers Allocated                  112503          0
+Buffers Freed                      112503          0
+Buffers Current                         0          0
+Buffers HWM                           148          0
+
+15 rows selected.
+
+Elapsed: 00:00:00.03
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT DFO_NUMBER, TQ_ID, SERVER_TYPE, PROCESS, NUM_ROWS
+  2  FROM V$PQ_TQSTAT ORDER BY DFO_NUMBER DESC, TQ_ID, SERVER_TYPE, PROCESS;
+
+no rows selected
+
+Elapsed: 00:00:00.00
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT NAME, VALUE FROM GV$SYSSTAT
+  2  WHERE UPPER (NAME) LIKE '%PARALLEL OPERATIONS%'
+  3  OR UPPER (NAME) LIKE '%PARALLELIZED%' OR UPPER (NAME) LIKE '%PX%';
+
+NAME                                                                  VALUE
+---------------------------------------------------------------- ----------
+queries parallelized                                                      0
+DML statements parallelized                                               0
+DDL statements parallelized                                               0
+DFO trees parallelized                                                    0
+Parallel operations not downgraded                                        0
+Parallel operations downgraded to serial                                  0
+Parallel operations downgraded 75 to 99 pct                               0
+Parallel operations downgraded 50 to 75 pct                               0
+Parallel operations downgraded 25 to 50 pct                               0
+Parallel operations downgraded 1 to 25 pct                                0
+PX local messages sent                                                    0
+PX local messages recv'd                                                  0
+PX remote messages sent                                                   0
+PX remote messages recv'd                                                 0
+
+14 rows selected.
+
+Elapsed: 00:00:00.04
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT STATISTIC, VALUE FROM V$PQ_SYSSTAT;
+
+STATISTIC                           VALUE
+------------------------------ ----------
+Servers Busy                            0
+Servers Idle                           22
+Servers Highwater                      12
+Server Sessions                     16646
+Servers Started                       490
+Servers Shutdown                      468
+Servers Cleaned Up                      0
+Queries Queued                          0
+Queries Initiated                    4197
+Queries Initiated (IPQ)                 0
+DML Initiated                           0
+DML Initiated (IPQ)                     0
+DDL Initiated                           0
+DDL Initiated (IPQ)                     0
+DFO Trees                            4502
+Sessions Active                         0
+Local Msgs Sent                    232738
+Distr Msgs Sent                         0
+Local Msgs Recv'd                  230646
+Distr Msgs Recv'd                       0
+
+20 rows selected.
+
+Elapsed: 00:00:00.03
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT * FROM V$PQ_SYSSTAT;
+
+STATISTIC                           VALUE     CON_ID
+------------------------------ ---------- ----------
+Servers Busy                            0          0
+Servers Idle                           22          0
+Servers Highwater                      12          0
+Server Sessions                     16646          0
+Servers Started                       490          0
+Servers Shutdown                      468          0
+Servers Cleaned Up                      0          0
+Queries Queued                          0          0
+Queries Initiated                    4197          0
+Queries Initiated (IPQ)                 0          0
+DML Initiated                           0          0
+DML Initiated (IPQ)                     0          0
+DDL Initiated                           0          0
+DDL Initiated (IPQ)                     0          0
+DFO Trees                            4502          0
+Sessions Active                         0          0
+Local Msgs Sent                    232738          0
+Distr Msgs Sent                         0          0
+Local Msgs Recv'd                  230646          0
+Distr Msgs Recv'd                       0          0
+
+20 rows selected.
+
+Elapsed: 00:00:00.03
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT QCSID, SID, INST_ID "Inst", SERVER_GROUP "Group", SERVER_SET "Set",
+  2    DEGREE "Degree", REQ_DEGREE "Req Degree"
+  3  FROM GV$PX_SESSION ORDER BY QCSID, QCINST_ID, SERVER_GROUP, SERVER_SET;
+
+no rows selected
+
+Elapsed: 00:00:00.01
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT QCSID, SID, INST_ID "Inst", SERVER_GROUP "Group", SERVER_SET "Set",
+  2    NAME "Stat Name", VALUE
+  3  FROM GV$PX_SESSTAT A, V$STATNAME B
+  4  WHERE A.STATISTIC# = B.STATISTIC# AND NAME LIKE 'PHYSICAL READS'
+  5    AND VALUE > 0 ORDER BY QCSID, QCINST_ID, SERVER_GROUP, SERVER_SET;
+
+no rows selected
+
+Elapsed: 00:00:00.01
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT px.SID "SID", p.PID, p.SPID "SPID", px.INST_ID "Inst",
+  2         px.SERVER_GROUP "Group", px.SERVER_SET "Set",
+  3         px.DEGREE "Degree", px.REQ_DEGREE "Req Degree", w.event "Wait Event"
+  4  FROM GV$SESSION s, GV$PX_SESSION px, GV$PROCESS p, GV$SESSION_WAIT w
+  5  WHERE s.sid (+) = px.sid AND s.inst_id (+) = px.inst_id AND
+  6        s.sid = w.sid (+) AND s.inst_id = w.inst_id (+) AND
+  7        s.paddr = p.addr (+) AND s.inst_id = p.inst_id (+)
+  8  ORDER BY DECODE(px.QCINST_ID,  NULL, px.INST_ID,  px.QCINST_ID), px.QCSID,
+  9  DECODE(px.SERVER_GROUP, NULL, 0, px.SERVER_GROUP), px.SERVER_SET, px.INST_ID;
+
+no rows selected
+
+Elapsed: 00:00:00.03
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT TO_CHAR (SYSDATE, 'MM-DD-YYYY HH24:MI:SS' ) FROM DUAL;
+
+TO_CHAR(SYSDATE,'MM
+-------------------
+10-18-2017 11:31:29
+
+Elapsed: 00:00:00.00
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> set echo on;
+searstgi_admin@PDT16TST> set timing on;
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT TO_CHAR (SYSDATE, 'MM-DD-YYYY HH24:MI:SS' ) FROM DUAL;
+
+TO_CHAR(SYSDATE,'MM
+-------------------
+10-18-2017 12:27:34
+
+Elapsed: 00:00:00.01
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT CON_ID, NAME, OPEN_MODE, RESTRICTED FROM V$PDBS;
+
+    CON_ID NAME                           OPEN_MODE  RES
+---------- ------------------------------ ---------- ---
+         4 PDT16TST                       READ WRITE NO
+
+Elapsed: 00:00:10.59
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT DFO_NUMBER, TQ_ID, SERVER_TYPE, PROCESS, NUM_ROWS
+  2  FROM V$PQ_TQSTAT ORDER BY DFO_NUMBER DESC, TQ_ID, SERVER_TYPE, PROCESS;
+
+no rows selected
+
+Elapsed: 00:00:00.00
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT * FROM V$PX_BUFFER_ADVICE;
+
+STATISTIC                           VALUE     CON_ID
+------------------------------ ---------- ----------
+Servers Highwater                      12          0
+Buffers HWM                           148          0
+Estimated Buffers HWM                 144          0
+Servers Max                           160          0
+Estimated Buffers Max               19680          0
+Buffers Current Free                  936          0
+Buffers Current Total                 960          0
+
+7 rows selected.
+
+Elapsed: 00:00:00.00
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT * FROM V$PX_PROCESS;
+
+SERV STATUS           PID SPID                            SID    SERIAL# IS_GV     CON_ID
+---- --------- ---------- ------------------------ ---------- ---------- ----- ----------
+P000 IN USE            26 2572                            253      48829 FALSE          0
+P001 IN USE            27 2548                            379      34717 FALSE          0
+P002 IN USE            28 3272                             15      45500 FALSE          0
+P003 IN USE            40 2124                             21      33830 FALSE          0
+P004 IN USE            41 1648                            140       8664 FALSE          0
+P005 IN USE            42 1596                            249      18425 FALSE          0
+P006 IN USE            43 384                             372      52280 FALSE          0
+P007 IN USE            44 3732                             24      29636 FALSE          0
+P008 AVAILABLE         45 3736                                           FALSE          0
+P009 AVAILABLE         46 3488                                           FALSE          0
+P00A AVAILABLE         47 5032                                           FALSE          0
+P00B AVAILABLE         48 5020                                           FALSE          0
+P00C AVAILABLE         49 2728                                           FALSE          0
+P00D AVAILABLE         50 4308                                           FALSE          0
+P00E AVAILABLE         51 2884                                           FALSE          0
+P00F AVAILABLE         52 2824                                           FALSE          0
+P00M AVAILABLE         60 15592                                          FALSE          0
+P00N AVAILABLE         61 3952                                           FALSE          0
+P00H AVAILABLE         65 15520                                          FALSE          0
+P00G AVAILABLE         66 15812                                          FALSE          0
+P00I AVAILABLE         67 11180                                          FALSE          0
+P00J AVAILABLE         68 11632                                          FALSE          0
+P00K AVAILABLE         69 2068                                           FALSE          0
+P00L AVAILABLE         70 15916                                          FALSE          0
+
+24 rows selected.
+
+Elapsed: 00:00:00.06
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT * FROM V$PX_SESSION;
+
+SADDR                   SID    SERIAL#      QCSID  QCSERIAL#  QCINST_ID SERVER_GROUP SERVER_SET
+---------------- ---------- ---------- ---------- ---------- ---------- ------------ ----------
+   SERVER#     DEGREE REQ_DEGREE     CON_ID
+---------- ---------- ---------- ----------
+00007FFD10EF35A0        253      48829         19      24577          1            1          1
+         1          8          8          4
+
+00007FFD0F0D11C8        379      34717         19      24577          1            1          1
+         2          8          8          4
+
+00007FFD10D13780         15      45500         19      24577          1            1          1
+         3          8          8          4
+
+00007FFD10D072A0         21      33830         19      24577          1            1          1
+         4          8          8          4
+
+00007FFD10DF71B0        140       8664         19      24577          1            1          1
+         5          8          8          4
+
+00007FFD10EFB8E0        249      18425         19      24577          1            1          1
+         6          8          8          4
+
+00007FFD0F0DF778        372      52280         19      24577          1            1          1
+         7          8          8          4
+
+00007FFD10D01030         24      29636         19      24577          1            1          1
+         8          8          8          4
+
+00007FFD10D0B440         19      24577         19
+                                          4
+
+
+9 rows selected.
+
+Elapsed: 00:00:00.04
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT * FROM V$PX_PROCESS_SYSSTAT;
+
+STATISTIC                           VALUE     CON_ID
+------------------------------ ---------- ----------
+Servers In Use                          8          0
+Servers Available                      16          0
+Servers Started                       510          0
+Servers Shutdown                      486          0
+Servers Highwater                      12          0
+Servers Cleaned Up                      0          0
+Server Sessions                     17174          0
+Memory Chunks Allocated                 4          0
+Memory Chunks Freed                     0          0
+Memory Chunks Current                   4          0
+Memory Chunks HWM                       4          0
+Buffers Allocated                  116049          0
+Buffers Freed                      116025          0
+Buffers Current                        24          0
+Buffers HWM                           148          0
+
+15 rows selected.
+
+Elapsed: 00:00:00.01
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT DFO_NUMBER, TQ_ID, SERVER_TYPE, PROCESS, NUM_ROWS
+  2  FROM V$PQ_TQSTAT ORDER BY DFO_NUMBER DESC, TQ_ID, SERVER_TYPE, PROCESS;
+
+no rows selected
+
+Elapsed: 00:00:00.00
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT NAME, VALUE FROM GV$SYSSTAT
+  2  WHERE UPPER (NAME) LIKE '%PARALLEL OPERATIONS%'
+  3  OR UPPER (NAME) LIKE '%PARALLELIZED%' OR UPPER (NAME) LIKE '%PX%';
+
+NAME                                                                  VALUE
+---------------------------------------------------------------- ----------
+queries parallelized                                                      2
+DML statements parallelized                                               0
+DDL statements parallelized                                               0
+DFO trees parallelized                                                    2
+Parallel operations not downgraded                                        2
+Parallel operations downgraded to serial                                  0
+Parallel operations downgraded 75 to 99 pct                               0
+Parallel operations downgraded 50 to 75 pct                               0
+Parallel operations downgraded 25 to 50 pct                               0
+Parallel operations downgraded 1 to 25 pct                                0
+PX local messages sent                                                  414
+PX local messages recv'd                                                414
+PX remote messages sent                                                   0
+PX remote messages recv'd                                                 0
+
+14 rows selected.
+
+Elapsed: 00:00:00.03
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT STATISTIC, VALUE FROM V$PQ_SYSSTAT;
+
+STATISTIC                           VALUE
+------------------------------ ----------
+Servers Busy                            8
+Servers Idle                           16
+Servers Highwater                      12
+Server Sessions                     17174
+Servers Started                       510
+Servers Shutdown                      486
+Servers Cleaned Up                      0
+Queries Queued                          0
+Queries Initiated                    4329
+Queries Initiated (IPQ)                 0
+DML Initiated                           0
+DML Initiated (IPQ)                     0
+DDL Initiated                           0
+DDL Initiated (IPQ)                     0
+DFO Trees                            4642
+Sessions Active                         1
+Local Msgs Sent                    240002
+Distr Msgs Sent                         0
+Local Msgs Recv'd                  237858
+Distr Msgs Recv'd                       0
+
+20 rows selected.
+
+Elapsed: 00:00:00.01
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT * FROM V$PQ_SYSSTAT;
+
+STATISTIC                           VALUE     CON_ID
+------------------------------ ---------- ----------
+Servers Busy                            8          0
+Servers Idle                           16          0
+Servers Highwater                      12          0
+Server Sessions                     17174          0
+Servers Started                       510          0
+Servers Shutdown                      486          0
+Servers Cleaned Up                      0          0
+Queries Queued                          0          0
+Queries Initiated                    4329          0
+Queries Initiated (IPQ)                 0          0
+DML Initiated                           0          0
+DML Initiated (IPQ)                     0          0
+DDL Initiated                           0          0
+DDL Initiated (IPQ)                     0          0
+DFO Trees                            4642          0
+Sessions Active                         1          0
+Local Msgs Sent                    240002          0
+Distr Msgs Sent                         0          0
+Local Msgs Recv'd                  237858          0
+Distr Msgs Recv'd                       0          0
+
+20 rows selected.
+
+Elapsed: 00:00:00.03
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT QCSID, SID, INST_ID "Inst", SERVER_GROUP "Group", SERVER_SET "Set",
+  2    DEGREE "Degree", REQ_DEGREE "Req Degree"
+  3  FROM GV$PX_SESSION ORDER BY QCSID, QCINST_ID, SERVER_GROUP, SERVER_SET;
+
+     QCSID        SID       Inst      Group        Set     Degree Req Degree
+---------- ---------- ---------- ---------- ---------- ---------- ----------
+        19        253          1          1          1          8          8
+        19        379          1          1          1          8          8
+        19         15          1          1          1          8          8
+        19         21          1          1          1          8          8
+        19        140          1          1          1          8          8
+        19        249          1          1          1          8          8
+        19        372          1          1          1          8          8
+        19         24          1          1          1          8          8
+        19         19          1
+
+9 rows selected.
+
+Elapsed: 00:00:00.03
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT QCSID, SID, INST_ID "Inst", SERVER_GROUP "Group", SERVER_SET "Set",
+  2    NAME "Stat Name", VALUE
+  3  FROM GV$PX_SESSTAT A, V$STATNAME B
+  4  WHERE A.STATISTIC# = B.STATISTIC# AND NAME LIKE 'PHYSICAL READS'
+  5    AND VALUE > 0 ORDER BY QCSID, QCINST_ID, SERVER_GROUP, SERVER_SET;
+
+no rows selected
+
+Elapsed: 00:00:00.01
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT px.SID "SID", p.PID, p.SPID "SPID", px.INST_ID "Inst",
+  2         px.SERVER_GROUP "Group", px.SERVER_SET "Set",
+  3         px.DEGREE "Degree", px.REQ_DEGREE "Req Degree", w.event "Wait Event"
+  4  FROM GV$SESSION s, GV$PX_SESSION px, GV$PROCESS p, GV$SESSION_WAIT w
+  5  WHERE s.sid (+) = px.sid AND s.inst_id (+) = px.inst_id AND
+  6        s.sid = w.sid (+) AND s.inst_id = w.inst_id (+) AND
+  7        s.paddr = p.addr (+) AND s.inst_id = p.inst_id (+)
+  8  ORDER BY DECODE(px.QCINST_ID,  NULL, px.INST_ID,  px.QCINST_ID), px.QCSID,
+  9  DECODE(px.SERVER_GROUP, NULL, 0, px.SERVER_GROUP), px.SERVER_SET, px.INST_ID;
+
+       SID        PID SPID                           Inst      Group        Set     Degree
+---------- ---------- ------------------------ ---------- ---------- ---------- ----------
+Req Degree Wait Event
+---------- ----------------------------------------------------------------
+        19         36 12200                             1
+           PX Deq: Execute Reply
+
+       379         27 2548                              1          1          1          8
+         8 direct path read
+
+        15         28 3272                              1          1          1          8
+         8 direct path read
+
+        24         44 3732                              1          1          1          8
+         8 direct path read
+
+       140         41 1648                              1          1          1          8
+         8 direct path read
+
+       249         42 1596                              1          1          1          8
+         8 direct path read
+
+       372         43 384                               1          1          1          8
+         8 direct path read
+
+       253         26 2572                              1          1          1          8
+         8 direct path read
+
+        21         40 2124                              1          1          1          8
+         8 direct path read
+
+
+9 rows selected.
+
+Elapsed: 00:00:00.04
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT TO_CHAR (SYSDATE, 'MM-DD-YYYY HH24:MI:SS' ) FROM DUAL;
+
+TO_CHAR(SYSDATE,'MM
+-------------------
+10-18-2017 12:27:45
+
+Elapsed: 00:00:00.01
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> set echo on;
+searstgi_admin@PDT16TST> set timing on;
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT TO_CHAR (SYSDATE, 'MM-DD-YYYY HH24:MI:SS' ) FROM DUAL;
+
+TO_CHAR(SYSDATE,'MM
+-------------------
+10-18-2017 12:27:53
+
+Elapsed: 00:00:00.01
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT CON_ID, NAME, OPEN_MODE, RESTRICTED FROM V$PDBS;
+
+    CON_ID NAME                           OPEN_MODE  RES
+---------- ------------------------------ ---------- ---
+         4 PDT16TST                       READ WRITE NO
+
+Elapsed: 00:00:07.31
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT DFO_NUMBER, TQ_ID, SERVER_TYPE, PROCESS, NUM_ROWS
+  2  FROM V$PQ_TQSTAT ORDER BY DFO_NUMBER DESC, TQ_ID, SERVER_TYPE, PROCESS;
+
+no rows selected
+
+Elapsed: 00:00:00.00
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT * FROM V$PX_BUFFER_ADVICE;
+
+STATISTIC                           VALUE     CON_ID
+------------------------------ ---------- ----------
+Servers Highwater                      12          0
+Buffers HWM                           148          0
+Estimated Buffers HWM                 144          0
+Servers Max                           160          0
+Estimated Buffers Max               19680          0
+Buffers Current Free                  936          0
+Buffers Current Total                 960          0
+
+7 rows selected.
+
+Elapsed: 00:00:00.01
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT * FROM V$PX_PROCESS;
+
+SERV STATUS           PID SPID                            SID    SERIAL# IS_GV     CON_ID
+---- --------- ---------- ------------------------ ---------- ---------- ----- ----------
+P000 IN USE            26 2572                            253      48829 FALSE          0
+P001 IN USE            27 2548                            379      34717 FALSE          0
+P002 IN USE            28 3272                             15      45500 FALSE          0
+P003 IN USE            40 2124                             21      33830 FALSE          0
+P004 IN USE            41 1648                            140       8664 FALSE          0
+P005 IN USE            42 1596                            249      18425 FALSE          0
+P006 IN USE            43 384                             372      52280 FALSE          0
+P007 IN USE            44 3732                             24      29636 FALSE          0
+P008 AVAILABLE         45 3736                                           FALSE          0
+P009 AVAILABLE         46 3488                                           FALSE          0
+P00A AVAILABLE         47 5032                                           FALSE          0
+P00B AVAILABLE         48 5020                                           FALSE          0
+P00C AVAILABLE         49 2728                                           FALSE          0
+P00D AVAILABLE         50 4308                                           FALSE          0
+P00E AVAILABLE         51 2884                                           FALSE          0
+P00F AVAILABLE         52 2824                                           FALSE          0
+P00M AVAILABLE         60 15592                                          FALSE          0
+P00N AVAILABLE         61 3952                                           FALSE          0
+P00H AVAILABLE         65 15520                                          FALSE          0
+P00G AVAILABLE         66 15812                                          FALSE          0
+P00I AVAILABLE         67 11180                                          FALSE          0
+P00J AVAILABLE         68 11632                                          FALSE          0
+P00K AVAILABLE         69 2068                                           FALSE          0
+P00L AVAILABLE         70 15916                                          FALSE          0
+
+24 rows selected.
+
+Elapsed: 00:00:00.04
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT * FROM V$PX_SESSION;
+
+SADDR                   SID    SERIAL#      QCSID  QCSERIAL#  QCINST_ID SERVER_GROUP SERVER_SET
+---------------- ---------- ---------- ---------- ---------- ---------- ------------ ----------
+   SERVER#     DEGREE REQ_DEGREE     CON_ID
+---------- ---------- ---------- ----------
+00007FFD10EF35A0        253      48829         19      24577          1            1          1
+         1          8          8          4
+
+00007FFD0F0D11C8        379      34717         19      24577          1            1          1
+         2          8          8          4
+
+00007FFD10D13780         15      45500         19      24577          1            1          1
+         3          8          8          4
+
+00007FFD10D072A0         21      33830         19      24577          1            1          1
+         4          8          8          4
+
+00007FFD10DF71B0        140       8664         19      24577          1            1          1
+         5          8          8          4
+
+00007FFD10EFB8E0        249      18425         19      24577          1            1          1
+         6          8          8          4
+
+00007FFD0F0DF778        372      52280         19      24577          1            1          1
+         7          8          8          4
+
+00007FFD10D01030         24      29636         19      24577          1            1          1
+         8          8          8          4
+
+00007FFD10D0B440         19      24577         19
+                                          4
+
+
+9 rows selected.
+
+Elapsed: 00:00:00.04
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT * FROM V$PX_PROCESS_SYSSTAT;
+
+STATISTIC                           VALUE     CON_ID
+------------------------------ ---------- ----------
+Servers In Use                          8          0
+Servers Available                      16          0
+Servers Started                       510          0
+Servers Shutdown                      486          0
+Servers Highwater                      12          0
+Servers Cleaned Up                      0          0
+Server Sessions                     17178          0
+Memory Chunks Allocated                 4          0
+Memory Chunks Freed                     0          0
+Memory Chunks Current                   4          0
+Memory Chunks HWM                       4          0
+Buffers Allocated                  116077          0
+Buffers Freed                      116053          0
+Buffers Current                        24          0
+Buffers HWM                           148          0
+
+15 rows selected.
+
+Elapsed: 00:00:00.01
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT DFO_NUMBER, TQ_ID, SERVER_TYPE, PROCESS, NUM_ROWS
+  2  FROM V$PQ_TQSTAT ORDER BY DFO_NUMBER DESC, TQ_ID, SERVER_TYPE, PROCESS;
+
+no rows selected
+
+Elapsed: 00:00:00.01
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT NAME, VALUE FROM GV$SYSSTAT
+  2  WHERE UPPER (NAME) LIKE '%PARALLEL OPERATIONS%'
+  3  OR UPPER (NAME) LIKE '%PARALLELIZED%' OR UPPER (NAME) LIKE '%PX%';
+
+NAME                                                                  VALUE
+---------------------------------------------------------------- ----------
+queries parallelized                                                      2
+DML statements parallelized                                               0
+DDL statements parallelized                                               0
+DFO trees parallelized                                                    2
+Parallel operations not downgraded                                        2
+Parallel operations downgraded to serial                                  0
+Parallel operations downgraded 75 to 99 pct                               0
+Parallel operations downgraded 50 to 75 pct                               0
+Parallel operations downgraded 25 to 50 pct                               0
+Parallel operations downgraded 1 to 25 pct                                0
+PX local messages sent                                                  434
+PX local messages recv'd                                                434
+PX remote messages sent                                                   0
+PX remote messages recv'd                                                 0
+
+14 rows selected.
+
+Elapsed: 00:00:00.03
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT STATISTIC, VALUE FROM V$PQ_SYSSTAT;
+
+STATISTIC                           VALUE
+------------------------------ ----------
+Servers Busy                            8
+Servers Idle                           16
+Servers Highwater                      12
+Server Sessions                     17178
+Servers Started                       510
+Servers Shutdown                      486
+Servers Cleaned Up                      0
+Queries Queued                          0
+Queries Initiated                    4330
+Queries Initiated (IPQ)                 0
+DML Initiated                           0
+DML Initiated (IPQ)                     0
+DDL Initiated                           0
+DDL Initiated (IPQ)                     0
+DFO Trees                            4643
+Sessions Active                         1
+Local Msgs Sent                    240046
+Distr Msgs Sent                         0
+Local Msgs Recv'd                  237902
+Distr Msgs Recv'd                       0
+
+20 rows selected.
+
+Elapsed: 00:00:00.01
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT * FROM V$PQ_SYSSTAT;
+
+STATISTIC                           VALUE     CON_ID
+------------------------------ ---------- ----------
+Servers Busy                            8          0
+Servers Idle                           16          0
+Servers Highwater                      12          0
+Server Sessions                     17178          0
+Servers Started                       510          0
+Servers Shutdown                      486          0
+Servers Cleaned Up                      0          0
+Queries Queued                          0          0
+Queries Initiated                    4330          0
+Queries Initiated (IPQ)                 0          0
+DML Initiated                           0          0
+DML Initiated (IPQ)                     0          0
+DDL Initiated                           0          0
+DDL Initiated (IPQ)                     0          0
+DFO Trees                            4643          0
+Sessions Active                         1          0
+Local Msgs Sent                    240046          0
+Distr Msgs Sent                         0          0
+Local Msgs Recv'd                  237902          0
+Distr Msgs Recv'd                       0          0
+
+20 rows selected.
+
+Elapsed: 00:00:00.03
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT QCSID, SID, INST_ID "Inst", SERVER_GROUP "Group", SERVER_SET "Set",
+  2    DEGREE "Degree", REQ_DEGREE "Req Degree"
+  3  FROM GV$PX_SESSION ORDER BY QCSID, QCINST_ID, SERVER_GROUP, SERVER_SET;
+
+     QCSID        SID       Inst      Group        Set     Degree Req Degree
+---------- ---------- ---------- ---------- ---------- ---------- ----------
+        19        253          1          1          1          8          8
+        19        379          1          1          1          8          8
+        19         15          1          1          1          8          8
+        19         21          1          1          1          8          8
+        19        140          1          1          1          8          8
+        19        249          1          1          1          8          8
+        19        372          1          1          1          8          8
+        19         24          1          1          1          8          8
+        19         19          1
+
+9 rows selected.
+
+Elapsed: 00:00:00.03
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT QCSID, SID, INST_ID "Inst", SERVER_GROUP "Group", SERVER_SET "Set",
+  2    NAME "Stat Name", VALUE
+  3  FROM GV$PX_SESSTAT A, V$STATNAME B
+  4  WHERE A.STATISTIC# = B.STATISTIC# AND NAME LIKE 'PHYSICAL READS'
+  5    AND VALUE > 0 ORDER BY QCSID, QCINST_ID, SERVER_GROUP, SERVER_SET;
+
+no rows selected
+
+Elapsed: 00:00:00.00
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT px.SID "SID", p.PID, p.SPID "SPID", px.INST_ID "Inst",
+  2         px.SERVER_GROUP "Group", px.SERVER_SET "Set",
+  3         px.DEGREE "Degree", px.REQ_DEGREE "Req Degree", w.event "Wait Event"
+  4  FROM GV$SESSION s, GV$PX_SESSION px, GV$PROCESS p, GV$SESSION_WAIT w
+  5  WHERE s.sid (+) = px.sid AND s.inst_id (+) = px.inst_id AND
+  6        s.sid = w.sid (+) AND s.inst_id = w.inst_id (+) AND
+  7        s.paddr = p.addr (+) AND s.inst_id = p.inst_id (+)
+  8  ORDER BY DECODE(px.QCINST_ID,  NULL, px.INST_ID,  px.QCINST_ID), px.QCSID,
+  9  DECODE(px.SERVER_GROUP, NULL, 0, px.SERVER_GROUP), px.SERVER_SET, px.INST_ID;
+
+       SID        PID SPID                           Inst      Group        Set     Degree
+---------- ---------- ------------------------ ---------- ---------- ---------- ----------
+Req Degree Wait Event
+---------- ----------------------------------------------------------------
+        19         36 12200                             1
+           PX Deq: Execute Reply
+
+       379         27 2548                              1          1          1          8
+         8 direct path read
+
+        15         28 3272                              1          1          1          8
+         8 direct path read
+
+        24         44 3732                              1          1          1          8
+         8 direct path read
+
+       140         41 1648                              1          1          1          8
+         8 direct path read
+
+       249         42 1596                              1          1          1          8
+         8 direct path read
+
+       372         43 384                               1          1          1          8
+         8 direct path read
+
+       253         26 2572                              1          1          1          8
+         8 direct path read
+
+        21         40 2124                              1          1          1          8
+         8 direct path read
+
+
+9 rows selected.
+
+Elapsed: 00:00:00.04
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT TO_CHAR (SYSDATE, 'MM-DD-YYYY HH24:MI:SS' ) FROM DUAL;
+
+TO_CHAR(SYSDATE,'MM
+-------------------
+10-18-2017 12:28:00
+
+Elapsed: 00:00:00.00
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> set echo on;
+searstgi_admin@PDT16TST> set timing on;
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT TO_CHAR (SYSDATE, 'MM-DD-YYYY HH24:MI:SS' ) FROM DUAL;
+
+TO_CHAR(SYSDATE,'MM
+-------------------
+10-18-2017 12:28:13
+
+Elapsed: 00:00:00.00
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT CON_ID, NAME, OPEN_MODE, RESTRICTED FROM V$PDBS;
+
+    CON_ID NAME                           OPEN_MODE  RES
+---------- ------------------------------ ---------- ---
+         4 PDT16TST                       READ WRITE NO
+
+Elapsed: 00:00:16.42
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT DFO_NUMBER, TQ_ID, SERVER_TYPE, PROCESS, NUM_ROWS
+  2  FROM V$PQ_TQSTAT ORDER BY DFO_NUMBER DESC, TQ_ID, SERVER_TYPE, PROCESS;
+
+no rows selected
+
+Elapsed: 00:00:00.00
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT * FROM V$PX_BUFFER_ADVICE;
+
+STATISTIC                           VALUE     CON_ID
+------------------------------ ---------- ----------
+Servers Highwater                      12          0
+Buffers HWM                           148          0
+Estimated Buffers HWM                 144          0
+Servers Max                           160          0
+Estimated Buffers Max               19680          0
+Buffers Current Free                  936          0
+Buffers Current Total                 960          0
+
+7 rows selected.
+
+Elapsed: 00:00:00.00
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT * FROM V$PX_PROCESS;
+
+SERV STATUS           PID SPID                            SID    SERIAL# IS_GV     CON_ID
+---- --------- ---------- ------------------------ ---------- ---------- ----- ----------
+P000 IN USE            26 2572                            253      48829 FALSE          0
+P001 IN USE            27 2548                            379      34717 FALSE          0
+P002 IN USE            28 3272                             15      45500 FALSE          0
+P003 IN USE            40 2124                             21      33830 FALSE          0
+P004 IN USE            41 1648                            140       8664 FALSE          0
+P005 IN USE            42 1596                            249      18425 FALSE          0
+P006 IN USE            43 384                             372      52280 FALSE          0
+P007 IN USE            44 3732                             24      29636 FALSE          0
+P008 AVAILABLE         45 3736                                           FALSE          0
+P009 AVAILABLE         46 3488                                           FALSE          0
+P00A AVAILABLE         47 5032                                           FALSE          0
+P00B AVAILABLE         48 5020                                           FALSE          0
+P00C AVAILABLE         49 2728                                           FALSE          0
+P00D AVAILABLE         50 4308                                           FALSE          0
+P00E AVAILABLE         51 2884                                           FALSE          0
+P00F AVAILABLE         52 2824                                           FALSE          0
+P00M AVAILABLE         60 15592                                          FALSE          0
+P00N AVAILABLE         61 3952                                           FALSE          0
+P00H AVAILABLE         65 15520                                          FALSE          0
+P00G AVAILABLE         66 15812                                          FALSE          0
+P00I AVAILABLE         67 11180                                          FALSE          0
+P00J AVAILABLE         68 11632                                          FALSE          0
+P00K AVAILABLE         69 2068                                           FALSE          0
+P00L AVAILABLE         70 15916                                          FALSE          0
+
+24 rows selected.
+
+Elapsed: 00:00:00.04
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT * FROM V$PX_SESSION;
+
+SADDR                   SID    SERIAL#      QCSID  QCSERIAL#  QCINST_ID SERVER_GROUP SERVER_SET
+---------------- ---------- ---------- ---------- ---------- ---------- ------------ ----------
+   SERVER#     DEGREE REQ_DEGREE     CON_ID
+---------- ---------- ---------- ----------
+00007FFD10EF35A0        253      48829         19      24577          1            1          1
+         1          8          8          4
+
+00007FFD0F0D11C8        379      34717         19      24577          1            1          1
+         2          8          8          4
+
+00007FFD10D13780         15      45500         19      24577          1            1          1
+         3          8          8          4
+
+00007FFD10D072A0         21      33830         19      24577          1            1          1
+         4          8          8          4
+
+00007FFD10DF71B0        140       8664         19      24577          1            1          1
+         5          8          8          4
+
+00007FFD10EFB8E0        249      18425         19      24577          1            1          1
+         6          8          8          4
+
+00007FFD0F0DF778        372      52280         19      24577          1            1          1
+         7          8          8          4
+
+00007FFD10D01030         24      29636         19      24577          1            1          1
+         8          8          8          4
+
+00007FFD10D0B440         19      24577         19
+                                          4
+
+
+9 rows selected.
+
+Elapsed: 00:00:00.04
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT * FROM V$PX_PROCESS_SYSSTAT;
+
+STATISTIC                           VALUE     CON_ID
+------------------------------ ---------- ----------
+Servers In Use                          8          0
+Servers Available                      16          0
+Servers Started                       510          0
+Servers Shutdown                      486          0
+Servers Highwater                      12          0
+Servers Cleaned Up                      0          0
+Server Sessions                     17182          0
+Memory Chunks Allocated                 4          0
+Memory Chunks Freed                     0          0
+Memory Chunks Current                   4          0
+Memory Chunks HWM                       4          0
+Buffers Allocated                  116105          0
+Buffers Freed                      116081          0
+Buffers Current                        24          0
+Buffers HWM                           148          0
+
+15 rows selected.
+
+Elapsed: 00:00:00.01
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT DFO_NUMBER, TQ_ID, SERVER_TYPE, PROCESS, NUM_ROWS
+  2  FROM V$PQ_TQSTAT ORDER BY DFO_NUMBER DESC, TQ_ID, SERVER_TYPE, PROCESS;
+
+no rows selected
+
+Elapsed: 00:00:00.00
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT NAME, VALUE FROM GV$SYSSTAT
+  2  WHERE UPPER (NAME) LIKE '%PARALLEL OPERATIONS%'
+  3  OR UPPER (NAME) LIKE '%PARALLELIZED%' OR UPPER (NAME) LIKE '%PX%';
+
+NAME                                                                  VALUE
+---------------------------------------------------------------- ----------
+queries parallelized                                                      2
+DML statements parallelized                                               0
+DDL statements parallelized                                               0
+DFO trees parallelized                                                    2
+Parallel operations not downgraded                                        2
+Parallel operations downgraded to serial                                  0
+Parallel operations downgraded 75 to 99 pct                               0
+Parallel operations downgraded 50 to 75 pct                               0
+Parallel operations downgraded 25 to 50 pct                               0
+Parallel operations downgraded 1 to 25 pct                                0
+PX local messages sent                                                  464
+PX local messages recv'd                                                464
+PX remote messages sent                                                   0
+PX remote messages recv'd                                                 0
+
+14 rows selected.
+
+Elapsed: 00:00:00.03
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT STATISTIC, VALUE FROM V$PQ_SYSSTAT;
+
+STATISTIC                           VALUE
+------------------------------ ----------
+Servers Busy                            8
+Servers Idle                           16
+Servers Highwater                      12
+Server Sessions                     17182
+Servers Started                       510
+Servers Shutdown                      486
+Servers Cleaned Up                      0
+Queries Queued                          0
+Queries Initiated                    4331
+Queries Initiated (IPQ)                 0
+DML Initiated                           0
+DML Initiated (IPQ)                     0
+DDL Initiated                           0
+DDL Initiated (IPQ)                     0
+DFO Trees                            4644
+Sessions Active                         1
+Local Msgs Sent                    240095
+Distr Msgs Sent                         0
+Local Msgs Recv'd                  237951
+Distr Msgs Recv'd                       0
+
+20 rows selected.
+
+Elapsed: 00:00:00.01
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT * FROM V$PQ_SYSSTAT;
+
+STATISTIC                           VALUE     CON_ID
+------------------------------ ---------- ----------
+Servers Busy                            8          0
+Servers Idle                           16          0
+Servers Highwater                      12          0
+Server Sessions                     17182          0
+Servers Started                       510          0
+Servers Shutdown                      486          0
+Servers Cleaned Up                      0          0
+Queries Queued                          0          0
+Queries Initiated                    4331          0
+Queries Initiated (IPQ)                 0          0
+DML Initiated                           0          0
+DML Initiated (IPQ)                     0          0
+DDL Initiated                           0          0
+DDL Initiated (IPQ)                     0          0
+DFO Trees                            4644          0
+Sessions Active                         1          0
+Local Msgs Sent                    240095          0
+Distr Msgs Sent                         0          0
+Local Msgs Recv'd                  237951          0
+Distr Msgs Recv'd                       0          0
+
+20 rows selected.
+
+Elapsed: 00:00:00.01
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT QCSID, SID, INST_ID "Inst", SERVER_GROUP "Group", SERVER_SET "Set",
+  2    DEGREE "Degree", REQ_DEGREE "Req Degree"
+  3  FROM GV$PX_SESSION ORDER BY QCSID, QCINST_ID, SERVER_GROUP, SERVER_SET;
+
+     QCSID        SID       Inst      Group        Set     Degree Req Degree
+---------- ---------- ---------- ---------- ---------- ---------- ----------
+        19        253          1          1          1          8          8
+        19        379          1          1          1          8          8
+        19         15          1          1          1          8          8
+        19         21          1          1          1          8          8
+        19        140          1          1          1          8          8
+        19        249          1          1          1          8          8
+        19        372          1          1          1          8          8
+        19         24          1          1          1          8          8
+        19         19          1
+
+9 rows selected.
+
+Elapsed: 00:00:00.04
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT QCSID, SID, INST_ID "Inst", SERVER_GROUP "Group", SERVER_SET "Set",
+  2    NAME "Stat Name", VALUE
+  3  FROM GV$PX_SESSTAT A, V$STATNAME B
+  4  WHERE A.STATISTIC# = B.STATISTIC# AND NAME LIKE 'PHYSICAL READS'
+  5    AND VALUE > 0 ORDER BY QCSID, QCINST_ID, SERVER_GROUP, SERVER_SET;
+
+no rows selected
+
+Elapsed: 00:00:00.01
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT px.SID "SID", p.PID, p.SPID "SPID", px.INST_ID "Inst",
+  2         px.SERVER_GROUP "Group", px.SERVER_SET "Set",
+  3         px.DEGREE "Degree", px.REQ_DEGREE "Req Degree", w.event "Wait Event"
+  4  FROM GV$SESSION s, GV$PX_SESSION px, GV$PROCESS p, GV$SESSION_WAIT w
+  5  WHERE s.sid (+) = px.sid AND s.inst_id (+) = px.inst_id AND
+  6        s.sid = w.sid (+) AND s.inst_id = w.inst_id (+) AND
+  7        s.paddr = p.addr (+) AND s.inst_id = p.inst_id (+)
+  8  ORDER BY DECODE(px.QCINST_ID,  NULL, px.INST_ID,  px.QCINST_ID), px.QCSID,
+  9  DECODE(px.SERVER_GROUP, NULL, 0, px.SERVER_GROUP), px.SERVER_SET, px.INST_ID;
+
+       SID        PID SPID                           Inst      Group        Set     Degree
+---------- ---------- ------------------------ ---------- ---------- ---------- ----------
+Req Degree Wait Event
+---------- ----------------------------------------------------------------
+        19         36 12200                             1
+           PX Deq: Execute Reply
+
+       379         27 2548                              1          1          1          8
+         8 direct path read
+
+        15         28 3272                              1          1          1          8
+         8 direct path read
+
+        24         44 3732                              1          1          1          8
+         8 direct path read
+
+       140         41 1648                              1          1          1          8
+         8 direct path read
+
+       249         42 1596                              1          1          1          8
+         8 direct path read
+
+       372         43 384                               1          1          1          8
+         8 direct path read
+
+       253         26 2572                              1          1          1          8
+         8 direct path read
+
+        21         40 2124                              1          1          1          8
+         8 direct path read
+
+
+9 rows selected.
+
+Elapsed: 00:00:00.06
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT TO_CHAR (SYSDATE, 'MM-DD-YYYY HH24:MI:SS' ) FROM DUAL;
+
+TO_CHAR(SYSDATE,'MM
+-------------------
+10-18-2017 12:28:30
+
+Elapsed: 00:00:00.00
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT NAME, SUM(BYTES) FROM V$SGASTAT WHERE POOL='SHARED POOL'
+  2    GROUP BY ROLLUP (NAME);
+
+no rows selected
+
+Elapsed: 00:00:00.01
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+
+Microsoft Windows [Version 10.0.14393]
+(c) 2016 Microsoft Corporation. All rights reserved.
+
+C:\Users\Joseph>C:\app\OraDt16\product\12.1.0\dbhome_1\bin\sqlplus sys/Dj931#7Hj@//localhost:1521/data16pr as sysdba
+
+SQL*Plus: Release 12.1.0.2.0 Production on Wed Oct 18 11:16:35 2017
+
+Copyright (c) 1982, 2014, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 12c Enterprise Edition Release 12.1.0.2.0 - 64bit Production
+With the Partitioning, OLAP, Advanced Analytics and Real Application Testing options
+
+sys@DATA16PR> connect searstgi_admin/tgi5933@//localhost:1521/pdt16tst
+Connected.
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT POOL, NAME, SUM(BYTES) FROM V$SGASTAT WHERE POOL LIKE '%pool%'
+  2    GROUP BY ROLLUP (POOL, NAME);
+
+POOL         NAME                       SUM(BYTES)
+------------ -------------------------- ----------
+java pool    free memory                  16777216
+java pool                                 16777216
+large pool   free memory                  17825792
+large pool                                17825792
+shared pool  KGLS                          5257728
+shared pool  SQLA                         80754984
+shared pool  SQLK                           226688
+shared pool  SQLP                           816976
+shared pool  call                             9192
+shared pool  KGLDA                         1311536
+shared pool  KGLH0                        28290712
+shared pool  KGLHD                         4148192
+shared pool  KGLNA                          128984
+shared pool  KKBTD                            9808
+shared pool  KKSSP                           42904
+shared pool  KKTDF                           19136
+shared pool  KKTIN                           13280
+shared pool  KKTSR                           39088
+shared pool  KOKTD                          229952
+shared pool  PDBHP                         4418944
+shared pool  PLDIA                         1245624
+shared pool  PLMCD                           56944
+shared pool  PRTDS                          115032
+shared pool  PRTMV                          483904
+shared pool  KQR L PO                      4137640
+shared pool  KQR M PO                       408120
+shared pool  KQR M SO                       193520
+shared pool  KQR S SO                        76304
+shared pool  KQR X PO                       572752
+shared pool  KQR X SO                      2692808
+shared pool  free memory                  84831400
+shared pool  kglsim heap                    337280
+shared pool  kkcnRstatIni                      680
+shared pool  kwqicaqe2kc1                    17616
+shared pool  kwssnmapAlloc                    8160
+shared pool  qmpspdbonfy:0                   65280
+shared pool  pdb event stats               1054720
+shared pool  pga detail array                  240
+shared pool  keomg: entry list              104448
+shared pool  ksu:ksunf_freelist               4032
+shared pool  PDB Heap Descriptor               136
+shared pool  kglsim object batch            475272
+shared pool  ksuseplsrctx memory                24
+shared pool  Result Cache: State Objs         6824
+shared pool  KCB tablespace encryption        2640
+shared pool  Sort Segment extent descr      137280
+shared pool  fixed allocation callback           8
+shared pool  ksr message pool free que        2592
+shared pool  kwqmncgr: allocate buffer        4112
+shared pool  modification hash table c      311296
+shared pool  modification hash table e        4128
+shared pool  multiblock read structure        8208
+shared pool  object queue header free       178880
+shared pool                              223256008
+                                         257859016
+
+55 rows selected.
+
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST>
+searstgi_admin@PDT16TST> SELECT * FROM V$PX_PROCESS_SYSSTAT WHERE STATISTIC LIKE 'Buffers%';
+
+STATISTIC                           VALUE     CON_ID
+------------------------------ ---------- ----------
+Buffers Allocated                  135073          0
+Buffers Freed                      135073          0
+Buffers Current                         0          0
+Buffers HWM                           148          0
+
+searstgi_admin@PDT16TST> ^C
+C:\Users\Joseph>C:\app\OraDt16\product\12.1.0\dbhome_1\bin\sqlplus sys/Dj931#7Hj@//localhost:1521/data16pr as sysdba
+
+SQL*Plus: Release 12.1.0.2.0 Production on Wed Oct 18 19:27:36 2017
+
+Copyright (c) 1982, 2014, Oracle.  All rights reserved.
+
+How Database Convergence Impacts the Coming Decades of Data Management
+
+
+Connected to:
+Oracle Database 12c Enterprise Edition Release 12.1.0.2.0 - 64bit Production
+With the Partitioning, OLAP, Advanced Analytics and Real Application Testing options
+
+
+
+sys@DATA16PR>
+
+
+
+
+
+
+--  ################################################################################################################
+
+RF CUNY CLAIMS <rfcunyclaims@abs125.com>
+date:	Sat, Sep 16, 2017 at 6:03 PM
+subject:	DeArce
+mailed-by:	gmail.com
